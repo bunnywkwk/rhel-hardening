@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Goss Audit Report</title>
+<style>
+  :root {
+    --bg: #ffffff; --panel: #f7f7f8; --line: #e4e4e7; --text: #18181b; --muted: #71717a;
+    --pass: #15803d; --pass-bg: #ecfdf3; --fail: #b91c1c; --fail-bg: #fef2f2; --skip: #a16207; --skip-bg: #fefce8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 20px; font-size: 13px; }
+  .drop { border: 1px dashed var(--line); border-radius: 8px; padding: 28px; text-align: center; color: var(--muted); }
+  .drop.over { background: var(--panel); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 18px; }
+  .stat { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+  .stat b { display: block; font-size: 24px; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  .stat.fail b { color: var(--fail); } .stat.pass b { color: var(--pass); } .stat.skip b { color: var(--skip); }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .seg button { border: 0; background: none; padding: 7px 12px; cursor: pointer; font: inherit; color: var(--text); }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button[aria-pressed="true"] { background: var(--text); color: #fff; }
+  input[type=search], select { font: inherit; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--text); }
+  input[type=search] { flex: 1 1 220px; min-width: 0; }
+  label.chk { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); }
+  .count { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+  details { border: 1px solid var(--line); border-radius: 8px; margin-bottom: 6px; }
+  summary { display: flex; gap: 10px; align-items: baseline; padding: 9px 12px; cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  .id { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted); min-width: 70px; }
+  .t { flex: 1; min-width: 0; }
+  .badge { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 99px; white-space: nowrap; }
+  .b-fail { color: var(--fail); background: var(--fail-bg); } .b-pass { color: var(--pass); background: var(--pass-bg); } .b-skip { color: var(--skip); background: var(--skip-bg); }
+  .tests { border-top: 1px solid var(--line); padding: 8px 12px 10px; background: var(--panel); }
+  .test { padding: 8px 0; } .test + .test { border-top: 1px solid var(--line); }
+  .meta { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  pre { margin: 0; white-space: pre-wrap; word-break: break-word; font: 12px/1.5 ui-monospace, monospace; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Goss Audit Report</h1>
+  <p class="sub" id="sub">RHEL10-CIS-Audit result viewer. Open a <code>*_scan_*.json</code> file.</p>
+
+  <div class="drop" id="drop">Drop a Goss JSON file here, or <input type="file" id="file" accept=".json,application/json"></div>
+
+  <section id="report" class="hidden">
+    <div class="stats" id="stats"></div>
+    <div class="bar">
+      <div class="seg" id="seg">
+        <button data-s="fail" aria-pressed="true">Failed</button>
+        <button data-s="all" aria-pressed="false">All</button>
+        <button data-s="pass" aria-pressed="false">Passed</button>
+        <button data-s="skip" aria-pressed="false">Skipped</button>
+      </div>
+      <input type="search" id="q" placeholder="Search rule, ID, resource, output">
+      <select id="type"><option value="">All types</option></select>
+      <label class="chk"><input type="checkbox" id="open"> Expand all</label>
+    </div>
+    <div class="count" id="count"></div>
+    <div id="list"></div>
+  </section>
+</main>
+
+<!-- Optional embedded data: a build step may put Goss JSON here -->
+<script type="application/json" id="embedded"></script>
+
+<script>
+const $ = id => document.getElementById(id);
+const STATUS = { 0: 'pass', 1: 'fail', 2: 'skip' };
+const LABEL = { pass: 'pass', fail: 'fail', skip: 'skipped' };
+let rules = [], state = { s: 'fail', q: '', type: '', open: false };
+
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+// numeric-aware CIS id sort: 1.1.2.10 after 1.1.2.9
+const cmpId = (a, b) => a.localeCompare(b, undefined, { numeric: true });
+
+function load(data) {
+  const byRule = new Map();
+  for (const r of data.results || []) {
+    const parts = (r.title || r['resource-id'] || '').split(' | ');
+    const id = (r.meta && r.meta.CIS_ID && r.meta.CIS_ID[0]) || parts[0] || '?';
+    const name = parts.length > 1 ? parts[1] : parts[0];
+    const key = id + ' ' + name;
+    if (!byRule.has(key)) byRule.set(key, { id, name, tests: [] });
+    byRule.get(key).tests.push({ ...r, status: STATUS[r.result] || (r.successful ? 'pass' : 'fail'), sub: parts.slice(2).join(' | ') });
+  }
+  rules = [...byRule.values()].sort((a, b) => cmpId(a.id, b.id));
+  for (const g of rules) {
+    g.n = { pass: 0, fail: 0, skip: 0 };
+    g.tests.forEach(t => g.n[t.status]++);
+    g.status = g.n.fail ? 'fail' : g.n.pass ? 'pass' : 'skip';
+  }
+
+  const sm = data.summary || {};
+  const t = (data.results || []).length;
+  const n = { pass: 0, fail: 0, skip: 0 };
+  rules.forEach(g => { n.pass += g.n.pass; n.fail += g.n.fail; n.skip += g.n.skip; });
+  const failRules = rules.filter(g => g.status === 'fail').length;
+  $('sub').textContent = sm['summary-line'] || `${t} tests`;
+  $('stats').innerHTML = [
+    ['', t, 'Tests'], ['fail', n.fail, 'Failed tests'], ['fail', failRules, 'Failed rules'],
+    ['pass', n.pass, 'Passed tests'], ['skip', n.skip, 'Skipped tests'], ['', rules.length, 'Rules']
+  ].map(([c, v, l]) => `<div class="stat ${c}"><b>${v}</b><span>${l}</span></div>`).join('');
+
+  const types = [...new Set((data.results || []).map(r => r['resource-type']))].sort();
+  $('type').innerHTML = '<option value="">All types</option>' + types.map(x => `<option>${esc(x)}</option>`).join('');
+  $('drop').classList.add('hidden');
+  $('report').classList.remove('hidden');
+  render();
+}
+
+function render() {
+  const q = state.q.toLowerCase();
+  const out = [];
+  let shown = 0;
+  for (const g of rules) {
+    const tests = g.tests.filter(t =>
+      (state.s === 'all' || t.status === state.s) &&
+      (!state.type || t['resource-type'] === state.type) &&
+      (!q || [g.id, g.name, t.sub, t['resource-id'], t.property, t['summary-line']].join(' ').toLowerCase().includes(q)));
+    if (!tests.length) continue;
+    shown++;
+    const badges = ['fail', 'pass', 'skip'].filter(s => g.n[s]).map(s => `<span class="badge b-${s}">${g.n[s]} ${LABEL[s]}</span>`).join(' ');
+    out.push(`<details${state.open ? ' open' : ''}><summary><span class="id">${esc(g.id)}</span><span class="t">${esc(g.name)}</span>${badges}</summary><div class="tests">` +
+      tests.map(t => `<div class="test"><div class="meta"><span class="badge b-${t.status}">${LABEL[t.status]}</span> ${esc(t['resource-type'])} · ${esc(t['resource-id'])} · ${esc(t.property)}${t.sub ? ' · ' + esc(t.sub) : ''}</div><pre>${esc(t['summary-line'])}${t.err ? '\n\nerror: ' + esc(JSON.stringify(t.err)) : ''}</pre></div>`).join('') +
+      '</div></details>');
+  }
+  $('count').textContent = `${shown} rule${shown === 1 ? '' : 's'} shown`;
+  $('list').innerHTML = out.join('') || '<p class="count">Nothing matches.</p>';
+}
+
+function readFile(f) {
+  f.text().then(txt => load(JSON.parse(txt))).catch(e => alert('Not a Goss JSON file: ' + e.message));
+}
+
+$('file').addEventListener('change', e => e.target.files[0] && readFile(e.target.files[0]));
+const drop = $('drop');
+['dragover', 'dragenter'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+document.addEventListener('dragleave', () => drop.classList.remove('over'));
+document.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); e.dataTransfer.files[0] && readFile(e.dataTransfer.files[0]); });
+
+$('seg').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  state.s = b.dataset.s;
+  $('seg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  render();
+});
+$('q').addEventListener('input', e => { state.q = e.target.value; render(); });
+$('type').addEventListener('change', e => { state.type = e.target.value; render(); });
+$('open').addEventListener('change', e => { state.open = e.target.checked; render(); });
+
+const emb = $('embedded').textContent.trim();
+if (emb) load(JSON.parse(emb));
+</script>
+</body>
+</html>

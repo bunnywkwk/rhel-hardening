@@ -1,0 +1,46 @@
+---
+# CIS Level 1 Server hardening for every host in the 'cis' group (RHEL 9 and RHEL 10)
+# Rules to skip live in sysconfig/group_vars/cis_rhel<N>_host.yml; what to check after, in host_vars.
+# Run: ansible-playbook playbooks/main_playbook.yml --check   (dry run first)
+#      ansible-playbook playbooks/main_playbook.yml --limit lab_server
+
+- name: "Apply CIS Benchmark Level 1 Security Hardening"
+  hosts: cis
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Verify ansible-core version
+      ansible.builtin.assert:
+        that:
+          - ansible_version.full is version('2.16.1', '>=')  # minimum of both CIS roles
+        fail_msg: "Needs ansible-core 2.16.1 or newer, have {{ ansible_version.full }}."
+
+    - name: Verify target OS is RHEL
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['distribution'] == 'RedHat'  # any RHEL version with a rhel<N>_cis role in requirements.yml
+        fail_msg: "Needs RHEL, host is {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }}."
+
+  tasks:
+    # rhel9_cis on RHEL 9 hosts, rhel10_cis on RHEL 10 hosts
+    - name: Execute CIS Benchmark Level 1 Hardening
+      ansible.builtin.include_role:
+        name: "rhel{{ ansible_facts['distribution_major_version'] }}_cis"
+        apply:
+          tags:
+            - cis
+      # always: the include itself must run so --tags <role tag> (gui, mounts, rule_1.8.4) reaches the role's tasks
+      tags:
+        - always
+
+  post_tasks:
+    # Asked from the control node = what a client sees (firewall, forwarding, service all in the path)
+    - name: Check the host's services still answer
+      ansible.builtin.uri:
+        url: "{{ item }}"
+      loop: "{{ verify_urls | default([]) }}"
+      delegate_to: localhost
+      become: false
+      tags:
+        - verify

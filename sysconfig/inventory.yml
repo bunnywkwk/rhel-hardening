@@ -1,0 +1,17 @@
+---
+# Lab server: Apache repo (:8081) + container registry (:5000)
+servers:
+  hosts:
+    lab_server:
+      ansible_host: 192.168.10.160
+  vars:
+    ansible_user: frqadmin
+
+# CIS security classification
+cis:
+  children:
+    cis_rhel10_host:
+      hosts:
+        lab_server:
+    cis_rhel9_host:
+      hosts: {}  # add RHEL 9 hosts here

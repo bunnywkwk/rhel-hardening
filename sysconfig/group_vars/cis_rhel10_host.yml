@@ -1,0 +1,128 @@
+---
+# CIS RHEL 10 v1.0.1 Level 1 Server baseline, role RHEL10-CIS 1.1.2. A rule set to false is skipped.
+
+# Site
+rhel10cis_sshd_allowusers: "frqadmin sysadmin"
+rhel10cis_authselect_custom_profile_name: "rhel10"
+rhel10cis_disruption_high: true   # lets the role switch authselect/PAM
+rhel10cis_warning_banner: |4  # no backslashes (1.7.x)
+    ==============================================
+     █████╗ ███████╗██████╗  ██████╗ ███╗   ██╗
+    ██╔══██╗██╔════╝██╔══██╗██╔═══██╗████╗  ██║
+    ███████║█████╗  ██████╔╝██║   ██║██╔██╗ ██║
+    ██╔══██║██╔══╝  ██╔══██╗██║   ██║██║╚██╗██║
+    ██║  ██║███████╗██║  ██║╚██████╔╝██║ ╚████║
+    ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+          lab server  -  package repo + registry
+
+    Authorized users only. All activity may be monitored and reported.
+
+# Decisions
+rhel10cis_pam_faillock_deny: 3           # lock after 3 bad passwords
+rhel10cis_pam_faillock_unlock_time: 900  # 15 min
+rhel10cis_force_user_maxdays: true       # 365-day max age on existing users (root: chage by hand)
+rhel10cis_ipv6_required: false           # IPv6 not used
+rhel10cis_httpd_server: true             # Apache repo :8081
+rhel10cis_nfs_server: true
+# Audit stays off (role default): with 1.1.2 it stops the run (syver version, missing vars; reported upstream).
+
+# Level 1 off
+rhel10cis_rule_3_3_1_2: false  # forwarding: Podman ports
+rhel10cis_rule_3_3_1_3: false  # forwarding: Podman ports
+rhel10cis_rule_1_2_2_1: false  # dnf update: patching is its own change
+# mount options for partitions this host does not have (the audit fails them)
+rhel10cis_rule_1_1_2_3_2: false
+rhel10cis_rule_1_1_2_3_3: false
+rhel10cis_rule_1_1_2_4_2: false
+rhel10cis_rule_1_1_2_4_3: false
+rhel10cis_rule_1_1_2_5_2: false
+rhel10cis_rule_1_1_2_5_3: false
+rhel10cis_rule_1_1_2_5_4: false
+rhel10cis_rule_1_1_2_6_2: false
+rhel10cis_rule_1_1_2_6_3: false
+rhel10cis_rule_1_1_2_6_4: false
+rhel10cis_rule_1_1_2_7_2: false
+rhel10cis_rule_1_1_2_7_3: false
+rhel10cis_rule_1_1_2_7_4: false
+
+# Level 2 off (all)
+rhel10cis_rule_1_1_1_6: false  # overlay: Podman
+rhel10cis_rule_1_1_1_7: false
+rhel10cis_rule_1_1_1_8: false
+rhel10cis_rule_1_1_2_3_1: false
+rhel10cis_rule_1_1_2_4_1: false
+rhel10cis_rule_1_1_2_5_1: false
+rhel10cis_rule_1_1_2_6_1: false
+rhel10cis_rule_1_1_2_7_1: false
+rhel10cis_rule_1_2_1_3: false  # repo_gpgcheck: Red Hat repo index is not signed
+rhel10cis_rule_1_2_1_5: false
+rhel10cis_rule_1_3_1_5: false
+rhel10cis_rule_1_3_1_6: false
+rhel10cis_rule_1_5_3: false
+rhel10cis_rule_1_8_6: false
+rhel10cis_rule_2_1_3: false
+rhel10cis_rule_2_1_19: false
+rhel10cis_rule_2_1_20: false
+rhel10cis_rule_2_2_2: false
+rhel10cis_rule_3_3_1_1: false  # ip_forward: Podman
+rhel10cis_rule_5_1_8: false
+rhel10cis_rule_5_1_9: false
+rhel10cis_rule_5_2_4: false    # sudo password: breaks Ansible become
+rhel10cis_rule_5_3_2_1_3: false
+rhel10cis_rule_5_4_1_2: false
+rhel10cis_rule_5_4_3_1: false
+rhel10cis_rule_6_3_1_1: false  # 6.3.x auditd
+rhel10cis_rule_6_3_1_2: false
+rhel10cis_rule_6_3_1_3: false
+rhel10cis_rule_6_3_1_4: false
+rhel10cis_rule_6_3_2_1: false
+rhel10cis_rule_6_3_2_2: false
+rhel10cis_rule_6_3_2_3: false
+rhel10cis_rule_6_3_2_4: false
+rhel10cis_rule_6_3_3_1: false
+rhel10cis_rule_6_3_3_2: false
+rhel10cis_rule_6_3_3_3: false
+rhel10cis_rule_6_3_3_4: false
+rhel10cis_rule_6_3_3_5: false
+rhel10cis_rule_6_3_3_6: false
+rhel10cis_rule_6_3_3_7: false
+rhel10cis_rule_6_3_3_8: false
+rhel10cis_rule_6_3_3_9: false
+rhel10cis_rule_6_3_3_10: false
+rhel10cis_rule_6_3_3_11: false
+rhel10cis_rule_6_3_3_12: false
+rhel10cis_rule_6_3_3_13: false
+rhel10cis_rule_6_3_3_14: false
+rhel10cis_rule_6_3_3_15: false
+rhel10cis_rule_6_3_3_16: false
+rhel10cis_rule_6_3_3_17: false
+rhel10cis_rule_6_3_3_18: false
+rhel10cis_rule_6_3_3_19: false
+rhel10cis_rule_6_3_3_20: false
+rhel10cis_rule_6_3_3_21: false
+rhel10cis_rule_6_3_3_22: false
+rhel10cis_rule_6_3_3_23: false
+rhel10cis_rule_6_3_3_24: false
+rhel10cis_rule_6_3_3_25: false
+rhel10cis_rule_6_3_3_26: false
+rhel10cis_rule_6_3_3_27: false
+rhel10cis_rule_6_3_3_28: false
+rhel10cis_rule_6_3_3_29: false
+rhel10cis_rule_6_3_3_30: false
+rhel10cis_rule_6_3_3_31: false
+rhel10cis_rule_6_3_3_32: false
+rhel10cis_rule_6_3_3_33: false
+rhel10cis_rule_6_3_3_34: false
+rhel10cis_rule_6_3_3_35: false
+rhel10cis_rule_6_3_3_36: false
+rhel10cis_rule_6_3_3_37: false
+rhel10cis_rule_6_3_4_1: false
+rhel10cis_rule_6_3_4_2: false
+rhel10cis_rule_6_3_4_3: false
+rhel10cis_rule_6_3_4_4: false
+rhel10cis_rule_6_3_4_5: false
+rhel10cis_rule_6_3_4_6: false
+rhel10cis_rule_6_3_4_7: false
+rhel10cis_rule_6_3_4_8: false
+rhel10cis_rule_6_3_4_9: false
+rhel10cis_rule_6_3_4_10: false

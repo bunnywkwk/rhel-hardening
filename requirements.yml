@@ -1,0 +1,20 @@
+---
+# rhel-hardening - Ansible Galaxy requirements
+# Install: ansible-galaxy install -r requirements.yml -p roles
+#          ansible-galaxy collection install -r requirements.yml
+
+roles:
+  - name: rhel10_cis
+    src: https://github.com/ansible-lockdown/RHEL10-CIS.git
+    scm: git
+    version: 1.1.2
+
+  - name: rhel9_cis
+    src: https://github.com/ansible-lockdown/RHEL9-CIS.git
+    scm: git
+    version: 2.4.2
+
+collections:
+  - name: ansible.posix
+  - name: community.general
+  - name: community.crypto

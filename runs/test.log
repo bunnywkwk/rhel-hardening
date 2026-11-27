@@ -1,0 +1,384 @@
+
+PLAY [Apply CIS Benchmark Level 1 Security Hardening] **************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [lab_server]
+
+TASK [Execute CIS Benchmark Level 1 Hardening] *********************************
+included: rhel10_cis for lab_server
+
+TASK [rhel10_cis : Check OS version and family] ********************************
+ok: [lab_server] => {
+    "changed": false,
+    "msg": "This role is running against a supported OS RedHat 10"
+}
+
+TASK [rhel10_cis : Check ansible version] **************************************
+ok: [lab_server] => {
+    "changed": false,
+    "msg": "This role is running a supported version of ansible 2.20.7 >= 2.16.1"
+}
+
+TASK [rhel10_cis : Discover and set container variable if required] ************
+skipping: [lab_server]
+
+TASK [rhel10_cis : Load variable for container] ********************************
+skipping: [lab_server]
+
+TASK [rhel10_cis : Output if discovered is a container] ************************
+skipping: [lab_server]
+
+TASK [rhel10_cis : Check rhel10cis_bootloader_password variable has been changed] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : Check password set for frqadmin | password state] ***********
+skipping: [lab_server]
+
+TASK [rhel10_cis : Check for local account frqadmin | Check for local account] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : Check password set for frqadmin | Assert local password set] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : Check account is not locked for frqadmin | Assert local account not locked] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : Authselect discoveries | Ensure default name updated] *******
+ok: [lab_server] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [rhel10_cis : Authselect discoveries | Check custom profile exist and get settings] ***
+ok: [lab_server]
+
+TASK [rhel10_cis : Authselect discoveries | Check if custom profile is current] ***
+ok: [lab_server]
+
+TASK [rhel10_cis : Gather the package facts] ***********************************
+ok: [lab_server]
+
+TASK [rhel10_cis : Include OS specific variables] ******************************
+ok: [lab_server]
+
+TASK [rhel10_cis : PRELIM | AUDIT | Interactive Users] *************************
+ok: [lab_server]
+
+TASK [rhel10_cis : PRELIM | AUDIT | Interactive Users (reformat)] **************
+ok: [lab_server] => (item=frqadmin:1000:/home/frqadmin)
+ok: [lab_server] => (item=sysadmin:1001:/home/sysadmin)
+ok: [lab_server] => (item=postgres:26:/var/lib/pgsql)
+
+TASK [rhel10_cis : PRELIM | AUDIT | Capture /etc/password variables] ***********
+included: /home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/tasks/parse_etc_password.yml for lab_server
+
+TASK [rhel10_cis : PRELIM | 5.4.2 | 7.2.8 | Parse /etc/passwd] *****************
+ok: [lab_server]
+
+TASK [rhel10_cis : PRELIM | 5.4.2 | 7.2.8 | Split passwd entries] **************
+ok: [lab_server] => (item=root:x:0:0:Super User:/root:/bin/bash)
+ok: [lab_server] => (item=bin:x:1:1:bin:/bin:/usr/sbin/nologin)
+ok: [lab_server] => (item=daemon:x:2:2:daemon:/sbin:/usr/sbin/nologin)
+ok: [lab_server] => (item=adm:x:3:4:adm:/var/adm:/usr/sbin/nologin)
+ok: [lab_server] => (item=lp:x:4:7:lp:/var/spool/lpd:/usr/sbin/nologin)
+ok: [lab_server] => (item=sync:x:5:0:sync:/sbin:/usr/sbin/nologin)
+ok: [lab_server] => (item=shutdown:x:6:0:shutdown:/sbin:/usr/sbin/nologin)
+ok: [lab_server] => (item=halt:x:7:0:halt:/sbin:/usr/sbin/nologin)
+ok: [lab_server] => (item=mail:x:8:12:mail:/var/spool/mail:/usr/sbin/nologin)
+ok: [lab_server] => (item=operator:x:11:0:operator:/root:/usr/sbin/nologin)
+ok: [lab_server] => (item=games:x:12:100:games:/usr/games:/usr/sbin/nologin)
+ok: [lab_server] => (item=ftp:x:14:50:FTP User:/var/ftp:/usr/sbin/nologin)
+ok: [lab_server] => (item=nobody:x:65534:65534:Kernel Overflow User:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=dbus:x:81:81:System Message Bus:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=yggdrasil:x:999:999:yggdrasil system user:/var/lib/yggdrasil:/usr/sbin/nologin)
+ok: [lab_server] => (item=yggdrasil-worker:x:998:998:yggdrasil worker user:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=tss:x:59:59:Account used for TPM access:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/usr/sbin/nologin)
+ok: [lab_server] => (item=systemd-oom:x:997:996:systemd Userspace OOM Killer:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=polkitd:x:114:114:User for polkitd:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=rtkit:x:172:172:RealtimeKit:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=geoclue:x:996:994:User for geoclue:/var/lib/geoclue:/usr/sbin/nologin)
+ok: [lab_server] => (item=clevis:x:995:993:Clevis Decryption Framework unprivileged user:/var/cache/clevis:/usr/sbin/nologin)
+ok: [lab_server] => (item=sssd:x:994:992:User for sssd:/run/sssd:/usr/sbin/nologin)
+ok: [lab_server] => (item=gnome-remote-desktop:x:991:991:GNOME Remote Desktop:/var/lib/gnome-remote-desktop:/usr/sbin/nologin)
+ok: [lab_server] => (item=libstoragemgmt:x:990:990:daemon account for libstoragemgmt:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=pipewire:x:989:989:PipeWire System Daemon:/run/pipewire:/usr/sbin/nologin)
+ok: [lab_server] => (item=systemd-coredump:x:988:988:systemd Core Dumper:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=wsdd:x:987:986:Web Services Dynamic Discovery host daemon:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=colord:x:986:985:User for colord:/var/lib/colord:/usr/sbin/nologin)
+ok: [lab_server] => (item=setroubleshoot:x:985:984:SELinux troubleshoot server:/var/lib/setroubleshoot:/usr/sbin/nologin)
+ok: [lab_server] => (item=flatpak:x:984:983:Flatpak system helper:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=gdm:x:42:42:GNOME Display Manager:/var/lib/gdm:/usr/sbin/nologin)
+ok: [lab_server] => (item=gnome-initial-setup:x:983:982::/run/gnome-initial-setup/:/usr/sbin/nologin)
+ok: [lab_server] => (item=sshd:x:74:74:Privilege-separated SSH:/usr/share/empty.sshd:/usr/sbin/nologin)
+ok: [lab_server] => (item=chrony:x:982:981:chrony system user:/var/lib/chrony:/usr/sbin/nologin)
+ok: [lab_server] => (item=dnsmasq:x:981:980:Dnsmasq DHCP and DNS server:/var/lib/dnsmasq:/usr/sbin/nologin)
+ok: [lab_server] => (item=tcpdump:x:72:72:tcpdump:/:/usr/sbin/nologin)
+ok: [lab_server] => (item=frqadmin:x:1000:1000:frqadmin:/home/frqadmin:/bin/bash)
+ok: [lab_server] => (item=wazuh-indexer:x:980:978:wazuh-indexer user/group:/home/wazuh-indexer:/usr/sbin/nologin)
+ok: [lab_server] => (item=wazuh:x:979:977::/var/ossec:/usr/sbin/nologin)
+ok: [lab_server] => (item=wazuh-dashboard:x:978:976::/usr/share/wazuh-dashboard/:/usr/sbin/nologin)
+ok: [lab_server] => (item=sysadmin:x:1001:1001::/home/sysadmin:/bin/bash)
+ok: [lab_server] => (item=nginx:x:977:975:Nginx web server:/var/lib/nginx:/usr/sbin/nologin)
+ok: [lab_server] => (item=apache:x:48:48:Apache:/usr/share/httpd:/usr/sbin/nologin)
+ok: [lab_server] => (item=zabbix:x:976:974:Zabbix Monitoring System:/var/lib/zabbix:/usr/sbin/nologin)
+ok: [lab_server] => (item=postgres:x:26:26:PostgreSQL Server:/var/lib/pgsql:/bin/bash)
+ok: [lab_server] => (item=jenkins:x:975:973:Jenkins Automation Server:/var/lib/jenkins:/usr/sbin/nologin)
+ok: [lab_server] => (item=rpc:x:32:32:Rpcbind Daemon:/var/lib/rpcbind:/usr/sbin/nologin)
+ok: [lab_server] => (item=rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/usr/sbin/nologin)
+ok: [lab_server] => (item=systemd-journal-remote:x:972:972:systemd Journal Remote:/:/usr/sbin/nologin)
+
+TASK [rhel10_cis : PRELIM | AUDIT | Section 1.1 | Retrieve mount options - call mount] ***
+ok: [lab_server]
+
+TASK [rhel10_cis : PRELIM | AUDIT | Section 1.1 | Retrieve mount options - build fact] ***
+ok: [lab_server]
+
+TASK [rhel10_cis : PRELIM | AUDIT | Debug of mount variables to assist in troubleshooting] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : PRELIM | AUDIT | Capture UID_MIN from /etc/login.defs] ******
+ok: [lab_server]
+
+TASK [rhel10_cis : PRELIM | AUDIT | Capture UID_MAX from /etc/login.defs] ******
+ok: [lab_server]
+
+TASK [rhel10_cis : PRELIM | AUDIT | Set facts for interactive UID/GID ranges] ***
+ok: [lab_server]
+
+TASK [rhel10_cis : PRELIM | AUDIT | Gather the package facts after prelim] *****
+ok: [lab_server]
+
+TASK [rhel10_cis : PRELIM | AUDIT | Discover Gnome Desktop Environment] ********
+ok: [lab_server]
+
+TASK [rhel10_cis : 1.8.1 | PATCH | Ensure GDM login banner is configured | gdm profile] ***
+skipping: [lab_server] => (item={'regexp': 'user-db', 'line': 'user-db:user'}) 
+skipping: [lab_server] => (item={'regexp': 'system-db', 'line': 'system-db:local'}) 
+skipping: [lab_server] => (item={'regexp': 'file-db', 'line': 'file-db:/usr/share/gdm/greeter-dconf-defaults'}) 
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.1 | PATCH | Ensure GDM login banner is configured | Locks directory exists] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.1 | PATCH | Ensure GDM login banner is configured | create lock file] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.2 | PATCH | Ensure GDM disable-user-list is configured | gdm profile] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.2 | PATCH | Ensure GDM disable-user-list is configured | gdm profile] ***
+skipping: [lab_server] => (item={'regexp': 'user-db', 'line': 'user-db:user'}) 
+skipping: [lab_server] => (item={'regexp': 'system-db', 'line': 'system-db:local'}) 
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.2 | PATCH | Ensure GDM disable-user-list is configured | Locks directory exists] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.2 | PATCH | Ensure GDM disable-user-list is configured | create lock file] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.2 | PATCH | Ensure GDM disable-user-list is configured | gdm profile] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.3 | PATCH | Ensure GDM screen lock is configured | User profile] ***
+skipping: [lab_server] => (item={'regexp': 'user-db', 'line': 'user-db:user'}) 
+skipping: [lab_server] => (item={'regexp': 'system-db', 'line': 'system-db:local'}) 
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.3 | PATCH | Ensure GDM screen lock is configured | Locks directory exists] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.3 | PATCH | Ensure GDM screen lock is configured | create lock file] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.3 | PATCH | Ensure GDM screen lock is configured | gdm profile] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.4 | PATCH | Ensure GDM automount is configured | User profile] ***
+skipping: [lab_server] => (item={'regexp': 'user-db', 'line': 'user-db:user'}) 
+skipping: [lab_server] => (item={'regexp': 'system-db', 'line': 'system-db:local'}) 
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.4 | PATCH | Ensure GDM automount is configured | Locks directory exists] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.4 | PATCH | Ensure GDM automount is configured | create lock file] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.4 | PATCH | Ensure GDM automount is configured | gdm profile] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.5 | PATCH | Ensure GDM autorun-never is configured | User profile] ***
+skipping: [lab_server] => (item={'regexp': 'user-db', 'line': 'user-db:user'}) 
+skipping: [lab_server] => (item={'regexp': 'system-db', 'line': 'system-db:local'}) 
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.5 | PATCH | Ensure GDM autorun-never is configured | Locks directory exists] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.5 | PATCH | Ensure GDM autorun-never is configured | create lock file] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.5 | PATCH | Ensure GDM autorun-never is configured | gdm profile] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : 1.8.6 | PATCH | Ensure Xwayland is configured] **************
+skipping: [lab_server]
+
+TASK [rhel10_cis : SSHD | PATCH | SSH Config file is not exist] ****************
+skipping: [lab_server]
+
+TASK [rhel10_cis : 5.4.2.7 | PATCH | Ensure system accounts do not have a valid login shell] ***
+skipping: [lab_server] => (item=root) 
+ok: [lab_server] => (item=bin)
+ok: [lab_server] => (item=daemon)
+ok: [lab_server] => (item=adm)
+ok: [lab_server] => (item=lp)
+ok: [lab_server] => (item=sync)
+ok: [lab_server] => (item=shutdown)
+ok: [lab_server] => (item=halt)
+ok: [lab_server] => (item=mail)
+ok: [lab_server] => (item=operator)
+ok: [lab_server] => (item=games)
+ok: [lab_server] => (item=ftp)
+ok: [lab_server] => (item=nobody)
+ok: [lab_server] => (item=dbus)
+ok: [lab_server] => (item=yggdrasil)
+ok: [lab_server] => (item=yggdrasil-worker)
+ok: [lab_server] => (item=tss)
+changed: [lab_server] => (item=avahi)
+ok: [lab_server] => (item=systemd-oom)
+ok: [lab_server] => (item=polkitd)
+ok: [lab_server] => (item=rtkit)
+ok: [lab_server] => (item=geoclue)
+ok: [lab_server] => (item=clevis)
+ok: [lab_server] => (item=sssd)
+ok: [lab_server] => (item=gnome-remote-desktop)
+ok: [lab_server] => (item=libstoragemgmt)
+changed: [lab_server] => (item=pipewire)
+ok: [lab_server] => (item=systemd-coredump)
+ok: [lab_server] => (item=wsdd)
+ok: [lab_server] => (item=colord)
+ok: [lab_server] => (item=setroubleshoot)
+ok: [lab_server] => (item=flatpak)
+ok: [lab_server] => (item=gdm)
+changed: [lab_server] => (item=gnome-initial-setup)
+ok: [lab_server] => (item=sshd)
+ok: [lab_server] => (item=chrony)
+ok: [lab_server] => (item=dnsmasq)
+ok: [lab_server] => (item=tcpdump)
+skipping: [lab_server] => (item=frqadmin) 
+ok: [lab_server] => (item=wazuh-indexer)
+ok: [lab_server] => (item=wazuh)
+ok: [lab_server] => (item=wazuh-dashboard)
+skipping: [lab_server] => (item=sysadmin) 
+ok: [lab_server] => (item=nginx)
+ok: [lab_server] => (item=apache)
+ok: [lab_server] => (item=zabbix)
+skipping: [lab_server] => (item=postgres) 
+ok: [lab_server] => (item=jenkins)
+ok: [lab_server] => (item=rpc)
+ok: [lab_server] => (item=rpcuser)
+ok: [lab_server] => (item=systemd-journal-remote)
+
+TASK [rhel10_cis : 7.2.9 | AUDIT | Ensure local interactive user dot files access is configured | Interactive User accounts home directories] ***
+ok: [lab_server]
+
+TASK [rhel10_cis : POST | AUDITD | Set supported_syscalls variable] ************
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | AUDITD | Ensure use of privileged commands is collected] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | AUDIT | Discover if auditd is immutable] *************
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | AUDITD | Apply auditd template for section 6.2.4.x] ***
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/01-initialize.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-MAC-policy.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-access.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-delete.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-etc_NetworkManager_system_locale.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-etc_host_system_locale.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-etc_issue_system_locale.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-etc_sysconfig_system_locale.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-identity.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-kernel_modules.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-local-time-change.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-login.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-mount.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-perm_chng.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-perm_mod.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-privileged.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-scope.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-session.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-sudo.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-system_locale.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-time-change.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-user_emulation.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/50-usermod.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/98-auditd_exception.rules.j2) 
+skipping: [lab_server] => (item=/home/bunny/ansible-cis/rhel-hardening/roles/rhel10_cis/templates/etc/audit/rules.d/99-finalize.rules.j2) 
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | AUDITD | Set up auditd user logging exceptions] ******
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | AUDITD | Check for auditd differences if reload required] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | AUDITD | Flush handlers] *****************************
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | Gather the package facts after remediation] **********
+ok: [lab_server]
+
+TASK [rhel10_cis : POST | Update sysctl] ***************************************
+skipping: [lab_server] => (item=60-kernel_sysctl.conf) 
+skipping: [lab_server] => (item=60-disable_ipv6.conf) 
+skipping: [lab_server] => (item=60-netipv4_sysctl.conf) 
+skipping: [lab_server] => (item=60-netipv6_sysctl.conf) 
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | Sysctl flush ipv4 route table] ***********************
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | Sysctl flush ipv6 route table] ***********************
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | Flush handlers] **************************************
+
+TASK [rhel10_cis : POST | Reboot system if changes require it and not skipped] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | Warning a reboot required but skip option set] *******
+skipping: [lab_server]
+
+TASK [rhel10_cis : Reboot_required | AUDIT | Set fact for manual task warning.] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : Create ansible facts directory if audit facts not present] ***
+ok: [lab_server]
+
+TASK [rhel10_cis : Create ansible facts file and levels applied if audit facts not present] ***
+changed: [lab_server]
+
+TASK [rhel10_cis : POST | FETCH | Fetch files and copy to controller] **********
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | FETCH | Copy files to location available to managed node] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : POST | FETCH | Fetch files and copy to controller | Warning if issues with fetch_audit_files] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : FETCH_AUDIT_FILES | AUDIT | Set fact for manual task warning.] ***
+skipping: [lab_server]
+
+TASK [rhel10_cis : If Warnings found Output count and control IDs affected] ****
+skipping: [lab_server]
+
+PLAY RECAP *********************************************************************
+lab_server                 : ok=26   changed=2    unreachable=0    failed=0    skipped=48   rescued=0    ignored=0   
+

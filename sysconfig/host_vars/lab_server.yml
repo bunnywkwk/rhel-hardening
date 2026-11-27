@@ -1,0 +1,5 @@
+---
+# Checked after hardening, from the control node (see post_tasks in the playbook)
+verify_urls:
+  - "http://{{ ansible_host }}:8081/rhel10/BaseOS/repodata/repomd.xml"  # Apache repo
+  - "http://{{ ansible_host }}:5000/v2/_catalog"                        # Podman registry (needs forwarding)
